@@ -7,7 +7,7 @@ const getCards = (req, res) => {
     .catch(() => {
       res
         .status(INTERNAL_SERVER.code)
-        .send({ message: INTERNAL_SERVER.msg });
+        .send(INTERNAL_SERVER.body);
     });
 };
 
@@ -20,11 +20,11 @@ const createCard = (req, res) => {
       if (err.name === 'ValidationError') {
         res
           .status(BAD_REQUEST.code)
-          .send({ message: BAD_REQUEST.msg });
+          .send(BAD_REQUEST.body);
       } else {
         res
           .status(INTERNAL_SERVER.code)
-          .send({ message: INTERNAL_SERVER.msg });
+          .send(INTERNAL_SERVER.body);
       }
     });
 };
@@ -33,20 +33,20 @@ const deleteCard = (req, res) => {
   card.findByIdAndRemove(req.params.cardId)
     .then((c) => {
       if (!c) {
-        res.status(NOT_FOUND.code).send(NOT_FOUND.msg);
+        res.status(NOT_FOUND.code).send(NOT_FOUND.body);
       } else {
         res.send(c);
       }
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'CastError') {
         res
           .status(BAD_REQUEST.code)
-          .send({ message: BAD_REQUEST.msg });
+          .send(BAD_REQUEST.body);
       } else {
         res
           .status(INTERNAL_SERVER.code)
-          .send({ message: INTERNAL_SERVER.msg });
+          .send(INTERNAL_SERVER.body);
       }
     });
 };
@@ -59,7 +59,7 @@ const putLikeCard = (req, res) => {
   )
     .then((c) => {
       if (!c) {
-        res.status(NOT_FOUND.code).send(NOT_FOUND.msg);
+        res.status(NOT_FOUND.code).send(NOT_FOUND.body);
       } else {
         res.send(c);
       }
@@ -68,11 +68,11 @@ const putLikeCard = (req, res) => {
       if (err.name === 'ValidationError') {
         res
           .status(BAD_REQUEST.code)
-          .send({ message: BAD_REQUEST.msg });
+          .send(BAD_REQUEST.body);
       } else {
         res
           .status(INTERNAL_SERVER.code)
-          .send({ message: INTERNAL_SERVER.msg });
+          .send(INTERNAL_SERVER.body);
       }
     });
 };
@@ -85,7 +85,7 @@ const deleteLikeCard = (req, res) => {
   )
     .then((c) => {
       if (!c) {
-        res.status(NOT_FOUND.code).send(NOT_FOUND.msg);
+        res.status(NOT_FOUND.code).send(NOT_FOUND.body);
       } else {
         res.send(c);
       }
@@ -94,11 +94,11 @@ const deleteLikeCard = (req, res) => {
       if (err.name === 'ValidationError') {
         res
           .status(BAD_REQUEST.code)
-          .send({ message: BAD_REQUEST.msg });
+          .send(BAD_REQUEST.body);
       } else {
         res
           .status(INTERNAL_SERVER.code)
-          .send({ message: INTERNAL_SERVER.msg });
+          .send(INTERNAL_SERVER.body);
       }
     });
 };
