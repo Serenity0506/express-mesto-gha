@@ -37,6 +37,17 @@ const deleteCard = (req, res) => {
       } else {
         res.send(c);
       }
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res
+          .status(BAD_REQUEST.code)
+          .send({ message: BAD_REQUEST.msg });
+      } else {
+        res
+          .status(INTERNAL_SERVER.code)
+          .send({ message: INTERNAL_SERVER.msg });
+      }
     });
 };
 
