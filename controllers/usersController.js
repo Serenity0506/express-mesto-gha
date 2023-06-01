@@ -1,4 +1,3 @@
-const { request } = require('express');
 const User = require('../models/userModel');
 const { BAD_REQUEST, NOT_FOUND, INTERNAL_SERVER } = require('../utils/constants');
 

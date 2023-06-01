@@ -65,7 +65,7 @@ const putLikeCard = (req, res) => {
       }
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'CastError') {
         res
           .status(BAD_REQUEST.code)
           .send(BAD_REQUEST.body);
@@ -91,7 +91,7 @@ const deleteLikeCard = (req, res) => {
       }
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'CastError') {
         res
           .status(BAD_REQUEST.code)
           .send(BAD_REQUEST.body);
