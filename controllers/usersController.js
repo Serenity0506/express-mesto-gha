@@ -71,10 +71,16 @@ const updateUser = (req, res) => {
         res.send(user);
       }
     })
-    .catch(() => {
-      res
-        .status(INTERNAL_SERVER.code)
-        .send(INTERNAL_SERVER.body);
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res
+          .status(BAD_REQUEST.code)
+          .send(BAD_REQUEST.body);
+      } else {
+        res
+          .status(INTERNAL_SERVER.code)
+          .send(INTERNAL_SERVER.body);
+      }
     });
 };
 
