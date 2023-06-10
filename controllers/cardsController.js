@@ -1,6 +1,8 @@
 const card = require('../models/cardModel');
 const { UnauthorizedError } = require('../errors/http/UnauthorizedError');
 const { NotFoundError } = require('../errors/http/NotFoundError');
+const { BadRequestError } = require('../errors/http/BadRequestError');
+const { validateUrl } = require('../utils/validators');
 
 const getCards = (req, res, next) => {
   card.find({})
@@ -10,6 +12,8 @@ const getCards = (req, res, next) => {
 
 const createCard = (req, res, next) => {
   const { name, link } = req.body;
+
+  if (!validateUrl(link)) { throw new BadRequestError('У вас ссылка битая!'); }
 
   card.create({ name, link, owner: req.user._id })
     .then((c) => res.status(201).send(c))

@@ -2,7 +2,8 @@ const { BadRequestError } = require('../errors/http/BadRequestError');
 const { HttpError } = require('../errors/http/HttpError');
 const { InternalServerError } = require('../errors/http/InternalServerError');
 
-const handleExceptions = (err, req, res) => {
+// eslint-disable-next-line no-unused-vars
+const handleExceptions = (err, req, res, next) => {
   let httpError;
 
   if (err.name === 'ValidationError' || err.name === 'CastError') {
@@ -12,6 +13,8 @@ const handleExceptions = (err, req, res) => {
   } else {
     httpError = new InternalServerError();
   }
+
+  console.log(err.message);
 
   res
     .status(httpError.statusCode)

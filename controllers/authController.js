@@ -3,7 +3,6 @@ const bcrypt = require('bcryptjs');
 const User = require('../models/userModel');
 const { UnauthenticatedError } = require('../errors/http/UnauthenticatedError');
 const { BadRequestError } = require('../errors/http/BadRequestError');
-const { validateUrl } = require('../utils/validators');
 
 const login = (req, res, next) => {
   const {
@@ -21,20 +20,16 @@ const login = (req, res, next) => {
 
 const createUser = (req, res, next) => {
   const {
-    name, about, avatar, email, password,
+    email, password,
   } = req.body;
 
-  if (!validateUrl(avatar)) { throw new BadRequestError('У вас ссылка битая!'); }
+  if (!email || !password) { throw new BadRequestError(); }
 
   bcrypt.hash(password, 10)
-    .than((hash) => User.create({
-      name,
-      about,
-      avatar,
+    .then((hash) => User.create({
       email,
       password: hash,
     }))
-
     .then((user) => res.status(201).send(user))
     .catch(next);
 };
