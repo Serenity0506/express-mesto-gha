@@ -1,62 +1,34 @@
+const { NotFoundError } = require('../errors/http/NotFoundError');
+const { BadRequestError } = require('../errors/http/BadRequestError');
 const User = require('../models/userModel');
-const { BAD_REQUEST, NOT_FOUND, INTERNAL_SERVER } = require('../utils/constants');
+const { validateUrl } = require('../utils/validators');
 
-const getUsers = (req, res) => {
+const getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send(users))
-    .catch(() => {
-      res
-        .status(INTERNAL_SERVER.code)
-        .send(INTERNAL_SERVER.body);
-    });
+    .catch(next);
 };
 
-const getUserById = (req, res) => {
-  User.findById(req.params.userId)
+const getUserById = (req, res, next, userId) => {
+  User.findById(userId)
     .then((user) => {
       if (!user) {
-        res.status(NOT_FOUND.code).send(NOT_FOUND.body);
+        throw new NotFoundError();
       } else {
         res.send(user);
       }
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        res
-          .status(BAD_REQUEST.code)
-          .send(BAD_REQUEST.body);
-      } else {
-        res
-          .status(INTERNAL_SERVER.code)
-          .send(INTERNAL_SERVER.body);
-      }
-    });
+    .catch(next);
 };
 
-const createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
+const getUserByIdRouteParam = (req, res, next) => getUserById(req, res, next, req.params.userId);
+const getUserByIdAuth = (req, res, next) => getUserById(req, res, next, req.user._id);
 
-  User.create({ name, about, avatar })
-    .then((user) => res.status(201).send(user))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res
-          .status(BAD_REQUEST.code)
-          .send(BAD_REQUEST.body);
-      } else {
-        res
-          .status(INTERNAL_SERVER.code)
-          .send(INTERNAL_SERVER.body);
-      }
-    });
-};
-
-const updateUser = (req, res) => {
+const updateUser = (req, res, next) => {
   const { name, about } = req.body;
 
   if (!name || !about) {
-    res.status(BAD_REQUEST.code).send(BAD_REQUEST.body);
-    return;
+    throw new BadRequestError();
   }
 
   User.findByIdAndUpdate(
@@ -66,31 +38,18 @@ const updateUser = (req, res) => {
   )
     .then((user) => {
       if (!user) {
-        res.status(NOT_FOUND.code).send(NOT_FOUND.body);
+        throw new NotFoundError();
       } else {
         res.send(user);
       }
     })
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res
-          .status(BAD_REQUEST.code)
-          .send(BAD_REQUEST.body);
-      } else {
-        res
-          .status(INTERNAL_SERVER.code)
-          .send(INTERNAL_SERVER.body);
-      }
-    });
+    .catch(next);
 };
 
-const updateAvatar = (req, res) => {
+const updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
 
-  if (!avatar) {
-    res.status(BAD_REQUEST.code).send(BAD_REQUEST.body);
-    return;
-  }
+  if (!validateUrl(avatar)) { throw new BadRequestError('У вас ссылка битая!'); }
 
   User.findByIdAndUpdate(
     req.user._id,
@@ -99,22 +58,18 @@ const updateAvatar = (req, res) => {
   )
     .then((user) => {
       if (!user) {
-        res.status(NOT_FOUND.code).send(NOT_FOUND.body);
+        throw new NotFoundError();
       } else {
         res.send(user);
       }
     })
-    .catch(() => {
-      res
-        .status(INTERNAL_SERVER.code)
-        .send(INTERNAL_SERVER.body);
-    });
+    .catch(next);
 };
 
 module.exports = {
   getUsers,
-  getUserById,
-  createUser,
+  getUserByIdRouteParam,
+  getUserByIdAuth,
   updateUser,
   updateAvatar,
 };
