@@ -20,7 +20,7 @@ const login = (req, res, next) => {
 
 const createUser = (req, res, next) => {
   const {
-    email, password,
+    email, password, avatar = null, about = null, name = null,
   } = req.body;
 
   if (!email || !password) { throw new BadRequestError(); }
@@ -29,8 +29,15 @@ const createUser = (req, res, next) => {
     .then((hash) => User.create({
       email,
       password: hash,
+      avatar,
+      about,
+      name,
     }))
-    .then((user) => res.status(201).send(user))
+    .then((user) => {
+      const u = user.toObject();
+      delete u.password;
+      res.status(201).send(u);
+    })
     .catch(next);
 };
 

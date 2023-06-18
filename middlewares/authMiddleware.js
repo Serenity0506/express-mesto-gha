@@ -6,6 +6,7 @@ const unauthenticatedError = new UnauthenticatedError();
 
 const checkToken = (req, res, next) => {
   const { authorization } = req.headers;
+
   if (!authorization || !authorization.startsWith('Bearer ')) {
     res.status(unauthenticatedError.statusCode);
     res.send({ message: unauthenticatedError.message });
