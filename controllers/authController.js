@@ -20,7 +20,7 @@ const login = (req, res, next) => {
 
 const createUser = (req, res, next) => {
   const {
-    email, password, avatar = null, about = null, name = null,
+    email, password, avatar = undefined, about = undefined, name = undefined,
   } = req.body;
 
   if (!email || !password) { throw new BadRequestError(); }

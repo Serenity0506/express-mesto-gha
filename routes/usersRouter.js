@@ -9,12 +9,15 @@ router.get('/users/me', auth.checkToken, usersControllers.getUserByIdAuth);
 router.patch('/users/me', auth.checkToken, celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
-    about: Joi.string().required().min(2),
-
+    about: Joi.string().required().min(2).max(30),
   }),
 }), usersControllers.updateUser);
 
-router.get('/users/:userId', auth.checkToken, usersControllers.getUserByIdRouteParam);
+router.get('/users/:userId', auth.checkToken, celebrate({
+  params: Joi.object({
+    userId: Joi.string().hex().length(24),
+  }),
+}), usersControllers.getUserByIdRouteParam);
 
 router.patch('/users/me/avatar', auth.checkToken, celebrate({
   body: Joi.object().keys({
