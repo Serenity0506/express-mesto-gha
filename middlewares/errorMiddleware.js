@@ -17,9 +17,7 @@ const handleExceptions = (err, req, res, next) => {
     httpError = new InternalServerError();
   }
 
-  console.log(err.message);
-  console.log(err.name);
-  console.log(err);
+  // console.log(err);
 
   res
     .status(httpError.statusCode)
