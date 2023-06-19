@@ -9,7 +9,7 @@ router.post('/cards', celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
     link: Joi.string().required().custom((value, helpers) => {
-      if (!validateUrl(value)) helpers.error('Field should be a valid url');
+      if (!validateUrl(value)) return helpers.message('Field should be a valid url');
 
       return value;
     }),
