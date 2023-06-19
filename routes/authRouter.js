@@ -18,7 +18,7 @@ router.post('/signup', celebrate({
     email: Joi.string().required().email(),
     password: Joi.string().required().min(2),
     avatar: Joi.string().custom((value, helpers) => {
-      if (!validateUrl(value)) helpers.error('Field should be a valid url');
+      if (!validateUrl(value)) return helpers.error('Field should be a valid url');
 
       return value;
     }),

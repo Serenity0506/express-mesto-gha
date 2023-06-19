@@ -22,7 +22,7 @@ router.get('/users/:userId', celebrate({
 router.patch('/users/me/avatar', celebrate({
   body: Joi.object().keys({
     avatar: Joi.string().custom((value, helpers) => {
-      if (!validateUrl(value)) helpers.error('Field should be a valid url');
+      if (!validateUrl(value)) return helpers.error('Field should be a valid url');
 
       return value;
     }),
