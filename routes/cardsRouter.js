@@ -1,35 +1,34 @@
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 const cardsControllers = require('../controllers/cardsController');
-const auth = require('../middlewares/authMiddleware');
+const { validateUrl } = require('../utils/validators');
 
-router.get('/cards', auth.checkToken, cardsControllers.getCards);
-// router.post('/cards', auth.checkToken, cardsControllers.createCard);
+router.get('/cards', cardsControllers.getCards);
 
-router.post('/cards', auth.checkToken, celebrate({
+router.post('/cards', celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
-    link: Joi.string().required().uri({
-      scheme: [
-        'https',
-      ],
+    link: Joi.string().required().custom((value, helpers) => {
+      if (!validateUrl(value)) helpers.error('Field should be a valid url');
+
+      return value;
     }),
   }),
 }), cardsControllers.createCard);
 
-router.delete('/cards/:cardId', auth.checkToken, celebrate({
+router.delete('/cards/:cardId', celebrate({
   params: Joi.object({
     cardId: Joi.string().hex().length(24),
   }),
 }), cardsControllers.deleteCard);
 
-router.put('/cards/:cardId/likes', auth.checkToken, celebrate({
+router.put('/cards/:cardId/likes', celebrate({
   params: Joi.object({
     cardId: Joi.string().hex().length(24),
   }),
 }), cardsControllers.putLikeCard);
 
-router.delete('/cards/:cardId/likes', auth.checkToken, celebrate({
+router.delete('/cards/:cardId/likes', celebrate({
   params: Joi.object({
     cardId: Joi.string().hex().length(24),
   }),

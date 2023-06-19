@@ -2,6 +2,7 @@
 const { Schema, model } = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
+const { validateUrl } = require('../utils/validators');
 
 const userSchema = new Schema({
   name: {
@@ -19,6 +20,10 @@ const userSchema = new Schema({
   avatar: {
     type: String,
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
+    validate: {
+      validator: validateUrl,
+      message: (props) => `${props.value} 'Некорректный адрес ссылки'`,
+    },
   },
   email: {
     required: true,
